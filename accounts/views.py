@@ -39,7 +39,9 @@ def user_login(request):
 
         if user:
             token, _ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
+            response = Response({'token': token.key}, status=status.HTTP_200_OK)
+            response.set_cookie('token', token.key)
+            return response
 
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     
