@@ -44,11 +44,25 @@ def post_detail(request, post_id):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_post(request):
+
     serializer = PostSerializer(data=request.data, context={'request': request})
+
     if serializer.is_valid():
         serializer.save(author=request.user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        response = {
+            "status"  : "success",
+            "message" : "post created successfully",
+            "data"    : serializer.data 
+        }
+        return Response(response, status=status.HTTP_201_CREATED)
+    
+    response = {
+        "status"  : "error",
+        "message" : "something is wrong :(",
+        "data"    : {}
+    }
+
+    return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PUT', 'PATCH'])
